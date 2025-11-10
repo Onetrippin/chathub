@@ -1,0 +1,127 @@
+[project]
+name = 'storage-service'
+version = '0.1.0'
+description = ''
+package-mode = false
+authors = [
+    {name = 'Onetrippin',email = 'kolimpiadnik@gmail.com'}
+]
+readme = 'README.md'
+requires-python = '^3.13'
+dependencies = [
+    'fastapi (>=0.121.1,<0.122.0)',
+    'uvicorn[standard] (>=0.38.0,<0.39.0)',
+    'python-dotenv (>=1.2.1,<2.0.0)',
+    'aiofiles (>=25.1.0,<26.0.0)',
+    'aioboto3 (>=15.5.0,<16.0.0)',
+    'motor (>=3.7.1,<4.0.0)'
+]
+
+
+[build-system]
+requires = ['poetry-core>=2.0.0,<3.0.0']
+build-backend = 'poetry.core.masonry.api'
+
+[dependency-groups]
+dev = [
+    'black (>=25.11.0,<26.0.0)',
+    'isort (>=7.0.0,<8.0.0)',
+    'ruff (>=0.14.4,<0.15.0)',
+    'pytest (>=8.0.0,<9.0.0)',
+    'pytest-cov (>=7.0.0,<8.0.0)',
+    'pytest-deadfixtures (>=3.0.0,<4.0.0)',
+    'pytest-mock (>=3.15.1,<4.0.0)',
+    'pytest-repeat (>=0.9.4,<0.10.0)',
+    'pytest-asyncio (>=1.2.0,<2.0.0)'
+]
+
+
+[tool.mypy]
+python_version = '3.13'
+warn_return_any = true
+warn_unused_configs = true
+exclude = ['/venv']
+
+[tool.ruff]
+line-length = 120
+indent-width = 4
+target-version = 'py313'
+
+[tool.ruff.lint]
+select = ['ALL']
+ignore = [
+    'Q000', # Enforce double quotes for string literals
+    'RET502', # Checks for functions or methods that do not explicitly declare a return type annotation
+    'A005', # Checks for modules that use the same names as Python standard-library modules.
+    'B008', # Checks for function calls in default function arguments.
+    'COM812', # Checks for the absence of trailing commas.
+    'D100', # Checks for undocumented public module definitions.
+    'D104', # Checks for undocumented public package definitions.
+    'D105', # Checks for undocumented magic method definitions.
+    'D107', # Checks for public __init__ method definitions that are missing docstrings.
+    'D203', # Checks for docstrings on class definitions that are not preceded by a blank line.
+    'D213', # Checks for docstring summary lines that are not positioned on the second physical line of the docstring.
+    'G004', # Checks for uses of f-strings to format logging messages.
+    'ISC001', # Checks for implicitly concatenated strings on a single line.
+    'RUF001', # Checks for ambiguous Unicode characters in strings.
+    'RUF002', # Checks for ambiguous Unicode characters in docstrings.
+    'RUF003', # Checks for ambiguous Unicode characters in comments.
+    'T201', # Print statements
+    'S311' # Random choice allowed
+]
+
+[tool.ruff.lint.per-file-ignores]
+'__init__.py' = [
+    'F401', # Checks for unused imports.
+]
+'tests/**.py' = [
+    'S101', # Checks for uses of the assert keyword.
+    'SLF001', # Checks for accesses on "private" class members.
+    'FBT001', # Checks for the use of boolean positional arguments in function definitions, as determined by the presence of a bool type hint.
+]
+'functional_tests/**.py' = [
+    'S101', # Checks for uses of the assert keyword.
+]
+'migrations/**.py' = [
+    'D103', # Checks for undocumented public function definitions.
+]
+
+[tool.ruff.lint.isort]
+split-on-trailing-comma = false
+
+[tool.ruff.lint.pylint]
+max-args = 7
+
+[tool.black]
+skip-string-normalization = true
+line-length = 120
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.pytest.ini_options]
+testpaths = ['tests']
+python_files = ['test_*.py']
+pythonpath = './app'
+addopts = '--maxfail=5 --disable-warnings -v'
+norecursedirs = ['venv', '.venv', '__pycache__']
+markers = ['unit: unit tests', 'integration: integration tests', 'smoke: smoke tests']
+
+[tool.coverage.run]
+branch = true
+source = ['app']
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 80
