@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "telegram-bot.fullname" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "telegram-bot.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "telegram-bot.fullname" . }}
+    spec:
+      containers:
+        - name: bot
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: MINI_APP_URL
+              value: {{ .Values.bot.miniAppUrl | quote }}
+          envFrom:
+            - secretRef:
+                name: {{ include "telegram-bot.fullname" . }}-secret

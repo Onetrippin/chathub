@@ -1,0 +1,21 @@
+image:
+  repository: your-registry/telegram-bot
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+bot:
+  miniAppUrl: "https://example.com/miniapp/"
+
+secrets:
+  create: true
+  botToken: ""
+  dbDsn: "postgresql+asyncpg://postgres:postgres@telegram-bot-postgres:5432/tg_app"
+
+postgres:
+  enabled: true
+  image: postgres:16
+  db: tg_app
+  user: postgres
+  password: postgres
+  storage:
+    size: 1Gi

@@ -1,0 +1,34 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: tg_app_postgres
+    environment:
+      POSTGRES_DB: tg_app
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - tg_app_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d tg_app"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  telegram-bot:
+    build:
+      context: ./services/integration_service/bot
+      dockerfile: Dockerfile
+    container_name: tg_app_bot
+    environment:
+      BOT_TOKEN: "${BOT_TOKEN}"
+      MINI_APP_URL: "${MINI_APP_URL:-https://example.com/miniapp/}"
+      DB_DSN: "postgresql+asyncpg://postgres:postgres@postgres:5432/tg_app"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  tg_app_pgdata:
