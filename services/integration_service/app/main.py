@@ -1,4 +1,3 @@
-from fastapi import FastAPI
 import asyncio
 
 from telegram import Update
@@ -22,7 +21,6 @@ def main() -> None:
     if not BOT_TOKEN:
         raise RuntimeError("Не задан BOT_TOKEN (переменная окружения).")
 
-app = FastAPI(title='Integration Service')
     asyncio.run(init_db())
 
     app = Application.builder().token(BOT_TOKEN).build()
