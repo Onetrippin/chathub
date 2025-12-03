@@ -1,0 +1,23 @@
+image:
+  repository: onetrippin/api-gateway
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8000
+
+env:
+  AUTH_URL: "http://auth-service:8000"
+  USER_URL: "http://user-service:8001"
+  MESSAGE_URL: "http://message-service:8002"
+  INTEGRATION_URL: "http://integration-service:8003"
+  AI_URL: "http://ai-service:8004"
+  NOTIF_URL: "http://notification-service:8005"
+  HTTP_IMPERSONATE: "chrome123"
+  HTTP_TIMEOUT_SECONDS: "20"
+  HTTP_RETRIES: "2"
+
+secrets:
+  create: false
+  JWT_PUBLIC_KEY: ""

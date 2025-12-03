@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "api-gateway.fullname" . }}-cfg
+data:
+  AUTH_URL: {{ .Values.env.AUTH_URL | quote }}
+  USER_URL: {{ .Values.env.USER_URL | quote }}
+  MESSAGE_URL: {{ .Values.env.MESSAGE_URL | quote }}
+  INTEGRATION_URL: {{ .Values.env.INTEGRATION_URL | quote }}
+  AI_URL: {{ .Values.env.AI_URL | quote }}
+  NOTIF_URL: {{ .Values.env.NOTIF_URL | quote }}
+  HTTP_IMPERSONATE: {{ .Values.env.HTTP_IMPERSONATE | quote }}
+  HTTP_TIMEOUT_SECONDS: {{ .Values.env.HTTP_TIMEOUT_SECONDS | quote }}
+  HTTP_RETRIES: {{ .Values.env.HTTP_RETRIES | quote }}
