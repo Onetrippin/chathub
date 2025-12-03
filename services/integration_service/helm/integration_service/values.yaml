@@ -1,5 +1,5 @@
 image:
-  repository: your-registry/telegram-bot
+  repository: onetrippin/telegram-bot
   tag: "latest"
   pullPolicy: IfNotPresent
 
