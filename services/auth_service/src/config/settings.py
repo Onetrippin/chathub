@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -24,8 +24,18 @@ SECRET_KEY = 'django-insecure-z)r8+c$%77nh6t439j)x_4^%accq0uje%q7fi1oh692fp5jnqh
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+TG_BOT_TOKEN = os.getenv("TG_BOT_TOKEN", "")
 
-ALLOWED_HOSTS = []
+# JWT (RS256)
+JWT_ISSUER = os.getenv("JWT_ISSUER", "auth-service")
+JWT_ACCESS_TTL = int(os.getenv("JWT_ACCESS_TTL", "900"))
+JWT_REFRESH_TTL = int(os.getenv("JWT_REFRESH_TTL", "1209600"))
+
+JWT_PRIVATE_KEY = os.getenv("JWT_PRIVATE_KEY", "")
+JWT_PUBLIC_KEY = os.getenv("JWT_PUBLIC_KEY", "")
+
+
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -73,9 +84,13 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("POSTGRES_DB", "auth_db"),
+        "USER": os.getenv("POSTGRES_USER", "postgres"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "postgres"),
+        "HOST": os.getenv("POSTGRES_HOST", "postgres"),
+        "PORT": int(os.getenv("POSTGRES_PORT", "5432")),
     }
 }
 
