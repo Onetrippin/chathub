@@ -1,0 +1,45 @@
+services:
+  auth-postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: auth_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - auth_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d auth_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  auth-service:
+    build:
+      context: ./services/auth_service
+      dockerfile: Dockerfile
+    environment:
+      DJANGO_DEBUG: "1"
+      DJANGO_ALLOWED_HOSTS: "*"
+      POSTGRES_HOST: auth-postgres
+      POSTGRES_DB: auth_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+      TG_BOT_TOKEN: "${TG_BOT_TOKEN}"
+
+      JWT_ISSUER: "auth-service"
+      JWT_ACCESS_TTL: "900"
+      JWT_REFRESH_TTL: "1209600"
+      JWT_PRIVATE_KEY: "${JWT_PRIVATE_KEY}"
+      JWT_PUBLIC_KEY: "${JWT_PUBLIC_KEY}"
+    depends_on:
+      auth-postgres:
+        condition: service_healthy
+    ports:
+      - "8001:8000"
+    restart: unless-stopped
+
+volumes:
+  auth_pgdata:
