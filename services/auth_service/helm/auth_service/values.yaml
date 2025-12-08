@@ -1,0 +1,32 @@
+image:
+  repository: onetrippin/auth-service
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8000
+
+env:
+  DJANGO_DEBUG: "0"
+  DJANGO_ALLOWED_HOSTS: "*"
+  POSTGRES_HOST: "auth-postgres"
+  POSTGRES_DB: "auth_db"
+  POSTGRES_USER: "postgres"
+  POSTGRES_PORT: "5432"
+  JWT_ISSUER: "auth-service"
+  JWT_ACCESS_TTL: "900"
+  JWT_REFRESH_TTL: "1209600"
+
+secrets:
+  create: true
+  DJANGO_SECRET_KEY: "change-me"
+  POSTGRES_PASSWORD: "postgres"
+  TG_BOT_TOKEN: ""
+  JWT_PRIVATE_KEY: ""
+  JWT_PUBLIC_KEY: ""
+
+postgres:
+  enabled: true
+  image: postgres:16
+  storageSize: 1Gi

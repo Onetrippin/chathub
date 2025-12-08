@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "auth-service.fullname" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "auth-service.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "auth-service.fullname" . }}
+    spec:
+      containers:
+        - name: auth-service
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: {{ include "auth-service.fullname" . }}-cfg
+            - secretRef:
+                name: {{ include "auth-service.fullname" . }}-secret
