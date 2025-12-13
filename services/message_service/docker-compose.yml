@@ -1,0 +1,49 @@
+services:
+  message-postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: message_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5435:5432"
+    volumes:
+      - message_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d message_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  message-redis:
+    image: redis:7
+    ports:
+      - "6380:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  message-service:
+    build:
+      context: ./services/message_service
+      dockerfile: Dockerfile
+    environment:
+      SERVICE_NAME: "message-service"
+      DATABASE_URL: "postgresql+asyncpg://postgres:postgres@message-postgres:5432/message_db"
+      REDIS_URL: "redis://message-redis:6379/0"
+      SOCKETIO_PATH: "/socket.io"
+      SOCKETIO_NAMESPACE: "/chat"
+      CORS_ORIGINS: "*"
+    depends_on:
+      message-postgres:
+        condition: service_healthy
+      message-redis:
+        condition: service_healthy
+    ports:
+      - "8002:8002"
+    restart: unless-stopped
+
+volumes:
+  message_pgdata:
