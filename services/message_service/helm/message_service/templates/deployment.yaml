@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "message-service.fullname" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "message-service.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "message-service.fullname" . }}
+    spec:
+      containers:
+        - name: message-service
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 8002
+          envFrom:
+            - configMapRef:
+                name: {{ include "message-service.fullname" . }}-cfg

@@ -1,0 +1,28 @@
+image:
+  repository: onetrippin/message-service
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8002
+
+env:
+  SERVICE_NAME: "message-service"
+  DATABASE_URL: "postgresql+asyncpg://postgres:postgres@message-service-postgres:5432/message_db"
+  REDIS_URL: "redis://message-service-redis:6379/0"
+  SOCKETIO_PATH: "/socket.io"
+  SOCKETIO_NAMESPACE: "/chat"
+  CORS_ORIGINS: "*"
+
+postgres:
+  enabled: true
+  image: postgres:16
+  db: message_db
+  user: postgres
+  password: postgres
+  storageSize: 1Gi
+
+redis:
+  enabled: true
+  image: redis:7
